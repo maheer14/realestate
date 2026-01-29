@@ -36,7 +36,7 @@ const HeroSection = () => {
                 value = "search query"
                 onChange={() => {}}
                 placeholder='Search by city, neighborhood or address'
-                className='w-full max-w-lg rounded-none rounded-l-xl border-none !bg-white !text-black h-12 placeholder:text-gray-500 focus-visible:ring-0' 
+                className='w-full max-w-lg rounded-none rounded-l-xl border-none bg-white! text-black! h-12 placeholder:text-gray-500 focus-visible:ring-0' 
                 />
                 <Button
                     onClick={()=> {}}
