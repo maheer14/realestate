@@ -153,15 +153,15 @@ if (!isAuthPage && !isDashboardPage) //allows public pages to be accessed withou
 }
 
     return (
-        <div className='h-full'>
-        <Authenticator
-            initialState={pathname.includes("signup") ? "signUp" : "signIn"}
-            components={components}
-            formFields={formFields}
-            >
-            {() => <>{children}</>}
-        </Authenticator>
-        </div>
+        <div className="h-screen w-full flex items-center justify-center bg-white">
+      <Authenticator
+        initialState={pathname.includes("signup") ? "signUp" : "signIn"}
+        components={components}
+        formFields={formFields}
+      >
+        {() => <>{children}</>}
+      </Authenticator>
+    </div>
     );
 }
 

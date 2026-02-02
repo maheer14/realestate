@@ -29,9 +29,24 @@ export const authMiddleware = (allowedRoles: string[]) => {
 
     try {
         const decoded = jwt.decode(token) as DecodedToken
-        const userRole = decoded["custom:role"]
+        const userRole = decoded["custom:role"] || ""
+        req.user = {
+            id:decoded.sub,
+            role:userRole
+        }
+
+        const hasAccess = allowedRoles.includes(userRole.toLowerCase())
+
+        if(!hasAccess) {
+            res.status(403).json({ message: "Access Denied"})
+        }
     }
-    } catch (
-        
-    )
+    catch (err) {
+        console.error("Failed to decode token:", err)
+        res.status(400).json({ message: "Invalid token"})
+        return
+
+    }
+    next() //allowed 
+}
 }

@@ -1,5 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
+import {
+  Application,
+  Lease,
+  Manager,
+  Payment,
+  Property,
+  Tenant,
+} from "@/types/prismaTypes";
+import { createNewUserInDatabase } from "@/lib/utils";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -18,7 +27,7 @@ export const api = createApi({
   tagTypes: [],
   endpoints: (build) => ({
     getAuthUser: build.query<User, void>({
-      queryFn: async(_, _queryApi, _extraoptions, fetchwithBQ) => {
+      queryFn: async(_, _queryApi, _extraoptions, fetchWithBQ) => {
         try {
           const session = await fetchAuthSession();
           const { idToken} = session.tokens ?? {};
@@ -30,10 +39,19 @@ export const api = createApi({
             `/managers/${user.userId}`
             :  `/tenants/${user.userId}`
 
-          let userDetailsResponse = await fetchwithBQ(endpoint)
+          let userDetailsResponse = await fetchWithBQ(endpoint)
 
           // if user doesnt exist, create new one 
-
+          if (userDetailsResponse.error && 
+            userDetailsResponse.error.status === 404)
+            {
+              userDetailsResponse = await createNewUserInDatabase(
+                user,
+                idToken,
+                userRole,
+                fetchWithBQ,
+              )
+            }
           return {
             data: {
               cognitoInfo: {...user},
@@ -50,4 +68,8 @@ export const api = createApi({
   }),
 });
 
+export const {
+  useGetAuthUserQuery
+
+} = api
 export const {} = api;
